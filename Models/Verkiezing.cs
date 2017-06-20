@@ -12,9 +12,8 @@ namespace Models
         public List<Partij> Partijen { get; private set; } = new List<Partij>();
         public List<Uitslag> Uitslagen { get; private set; } = new List<Uitslag>();
 
-        public Verkiezing(int id, string naam, int zetels, int zetelsMeerderheid)
+        public Verkiezing(string naam, int zetels, int zetelsMeerderheid)
         {
-            this.ID = id;
             this.Naam = naam;
             this.Zetels = zetels;
             this.ZetelsMeerderheid = zetelsMeerderheid;
@@ -28,6 +27,16 @@ namespace Models
         public void SetVerkiezingUitslagen(List<Uitslag> uitslagen)
         {
             this.Uitslagen = uitslagen;
+        }
+
+        public void SetID(int id)
+        {
+            this.ID = id;
+        }
+
+        public override string ToString()
+        {
+            return Naam;
         }
     }
 }

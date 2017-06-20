@@ -23,9 +23,14 @@ namespace Repository.Logic
             return context.GetAllVerkiezingen();
         }
 
-        public Verkiezing GetVerkiezing(int verkiezingID)
+        public void GetVerkiezingPartijen(Verkiezing verkiezing)
         {
-            return GetVerkiezing(verkiezingID);
+            context.GetVerkiezingPartijen(verkiezing);
+        }
+
+        public void GetVerkiezingsUitslagen(Verkiezing verkiezing)
+        {
+            context.GetVerkiezingUitslagen(verkiezing);
         }
     }
 }

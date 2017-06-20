@@ -15,7 +15,9 @@ namespace Repository.Database
 
         List<Verkiezing> GetAllVerkiezingen();
 
-        Verkiezing GetVerkiezing(int verkiezingID);
+        void GetVerkiezingPartijen(Verkiezing verkiezing);
+
+        void GetVerkiezingUitslagen(Verkiezing verkiezing);
 
         void SaveUitslag(Uitslag uitslag);
 

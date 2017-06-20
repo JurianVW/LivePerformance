@@ -70,12 +70,83 @@ namespace Repository.Database
 
         public List<Verkiezing> GetAllVerkiezingen()
         {
-            throw new System.NotImplementedException();
+            string query = "SELECT * FROM [Verkiezing] ORDER BY [Naam]";
+
+            List<Verkiezing> verkiezingen = new List<Verkiezing>();
+
+            using (SqlCommand command = con.Connection.CreateCommand())
+            {
+                command.CommandText = query;
+                command.CommandType = CommandType.Text;
+                using (SqlDataReader dataReader = command.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        Verkiezing verkiezing = new Verkiezing(dataReader.GetString(dataReader.GetOrdinal("Naam")),
+                            dataReader.GetInt32(dataReader.GetOrdinal("Zetels")),
+                            dataReader.GetInt32(dataReader.GetOrdinal("ZetelsMeerderheid")));
+                        verkiezing.SetID(dataReader.GetInt32(dataReader.GetOrdinal("ID")));
+                        verkiezingen.Add(verkiezing);
+                    }
+                }
+            }
+            return verkiezingen;
         }
 
-        public Verkiezing GetVerkiezing(int verkiezingID)
+        public void GetVerkiezingPartijen(Verkiezing verkiezing)
         {
-            throw new System.NotImplementedException();
+            string query = "SELECT p.* FROM [Partij] p " +
+                           "INNER JOIN [Verkiezing_Partij] vp ON vp.[PartijID] = p.ID " +
+                           "INNER JOIN [Verkiezing] v ON v.[ID] = vp.[VerkiezingID] " +
+                           "WHERE v.ID = @ID " +
+                           "ORDER BY p.[Naam]";
+            List<Partij> partijen = new List<Partij>();
+
+            using (SqlCommand command = con.Connection.CreateCommand())
+            {
+                command.CommandText = query;
+                command.CommandType = CommandType.Text;
+                command.Parameters.AddWithValue("@ID", verkiezing.ID);
+                using (SqlDataReader dataReader = command.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        Partij partij = new Partij(dataReader.GetString(dataReader.GetOrdinal("Naam")),
+                            dataReader.GetString(dataReader.GetOrdinal("NaamVolledig")),
+                            dataReader.GetString(dataReader.GetOrdinal("Lijsttrekker")));
+                        partij.SetID(dataReader.GetInt32(dataReader.GetOrdinal("ID")));
+                        partijen.Add(partij);
+                    }
+                    verkiezing.SetVerkiezingPartijen(partijen);
+                }
+            }
+        }
+
+        public void GetVerkiezingUitslagen(Verkiezing verkiezing)
+        {
+            string query = "SELECT u.* FROM [Uitslag] u " +
+                           "WHERE u.VerkiezingID = @ID " +
+                           "ORDER BY u.[Datum] DESC";
+            List<Uitslag> uitslagen = new List<Uitslag>();
+
+            using (SqlCommand command = con.Connection.CreateCommand())
+            {
+                command.CommandText = query;
+                command.CommandType = CommandType.Text;
+                command.Parameters.AddWithValue("@ID", verkiezing.ID);
+                using (SqlDataReader dataReader = command.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        Uitslag uitslag = new Uitslag(dataReader.GetString(dataReader.GetOrdinal("Naam")),
+                            dataReader.GetDateTime(dataReader.GetOrdinal("Datum")));
+
+                        uitslag.SetID(dataReader.GetInt32(dataReader.GetOrdinal("ID")));
+                        uitslagen.Add(uitslag);
+                    }
+                    verkiezing.SetVerkiezingUitslagen(uitslagen);
+                }
+            }
         }
 
         public void SaveUitslag(Uitslag uitslag)

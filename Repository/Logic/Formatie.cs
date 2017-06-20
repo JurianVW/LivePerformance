@@ -11,13 +11,14 @@ namespace Repository.Logic
     public class Formatie
     {
         private IVerkiezingsContext context;
-        private Verkiezing gekozenVerkiezing;
+        public Verkiezing GekozenVerkiezing { get; private set; }
 
         private int TotaalAantalStemmen;
 
-        public Formatie(IVerkiezingsContext verkiezingContext)
+        public Formatie(IVerkiezingsContext verkiezingContext, Verkiezing gekozenVerkiezing)
         {
             this.context = verkiezingContext;
+            this.GekozenVerkiezing = gekozenVerkiezing;
         }
 
         public void BerekenPartijGegevens(List<Partij> partijen)

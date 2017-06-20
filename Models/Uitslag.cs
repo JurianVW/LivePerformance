@@ -10,16 +10,25 @@ namespace Models
         public DateTime Datum { get; private set; }
         public List<Partij> Partijen { get; private set; } = new List<Partij>();
 
-        public Uitslag(int id, string naam, DateTime datum)
+        public Uitslag(string naam, DateTime datum)
         {
-            this.ID = id;
             this.Naam = naam;
             this.Datum = datum;
+        }
+
+        public void SetID(int id)
+        {
+            this.ID = id;
         }
 
         public void SetUitslagPartijen(List<Partij> partijen)
         {
             this.Partijen = partijen;
+        }
+
+        public override string ToString()
+        {
+            return Naam + "   -   Datum: " + Datum.ToString("dd-MM-yyyy");
         }
     }
 }
