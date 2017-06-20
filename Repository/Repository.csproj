@@ -40,8 +40,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="Database\IVerkiezingsContext.cs" />
+    <Compile Include="Database\VerkiezingSQLContext.cs" />
+    <Compile Include="Logic\Formatie.cs" />
     <Compile Include="Database\DatabaseConnection.cs" />
+    <Compile Include="Logic\PartijManager.cs" />
+    <Compile Include="Logic\UitslagManager.cs" />
+    <Compile Include="Logic\VerkiezingManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -50,8 +55,6 @@
       <Name>Models</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Logic\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
