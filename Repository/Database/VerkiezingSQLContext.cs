@@ -35,6 +35,7 @@ namespace Repository.Database
 
         public void DeletePartij(Partij partij)
         {
+            //Geen tijd meer gehad om dit te implimenteren maar laat het staan om te laten zien dat ik er wel aan heb gedacht
             throw new System.NotImplementedException();
         }
 

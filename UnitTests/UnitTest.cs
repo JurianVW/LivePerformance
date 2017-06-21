@@ -15,7 +15,7 @@ namespace UnitTests
         public void TestBerekenCoalitie()
         {
             Verkiezing verkiezing = new Verkiezing("Tweede kamer verkiezing", 150, 76);
-            Formatie formatie = new Formatie(new VerkiezingLocalContext(), verkiezing);
+            Formatie formatie = new Formatie(verkiezing);
             List<Partij> minderheid = new List<Partij>() { new Partij("vvd", "vvd nogiets", "Piet", 500, 34, 50), new Partij("vvd", "vvd nogiets", "Piet", 500, 34, 20) };
             List<Partij> meerderheid = new List<Partij>() { new Partij("vvd", "vvd nogiets", "Piet", 500, 34, 50), new Partij("vvd", "vvd nogiets", "Piet", 500, 34, 50) };
 
@@ -30,7 +30,7 @@ namespace UnitTests
         public void TestBerekenUitslag()
         {
             Verkiezing verkiezing = new Verkiezing("Tweede kamer verkiezing", 150, 76);
-            Formatie formatie = new Formatie(new VerkiezingLocalContext(), verkiezing);
+            Formatie formatie = new Formatie(verkiezing);
             List<Partij> partijen = new List<Partij>() { new Partij("vvd", "vvd nogiets", "Piet"), new Partij("vvd", "vvd nogiets", "Piet"), new Partij("vvd", "vvd nogiets", "Piet"), new Partij("vvd", "vvd nogiets", "Piet") };
             partijen[0].SetStemmen(50);
             partijen[1].SetStemmen(150);

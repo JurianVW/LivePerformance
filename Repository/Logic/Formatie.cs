@@ -10,18 +10,18 @@ namespace Repository.Logic
 {
     public class Formatie
     {
-        private IVerkiezingsContext context;
         public Verkiezing GekozenVerkiezing { get; private set; }
         public int ZetelsSelectie { get; private set; }
         public bool KamerMeerderheid { get; private set; }
         public string Premier { get; private set; }
 
-        public Formatie(IVerkiezingsContext verkiezingContext, Verkiezing gekozenVerkiezing)
+        //Ik geef een verkiezing mee omdat die nooit leeg mag zijn
+        public Formatie(Verkiezing gekozenVerkiezing)
         {
-            this.context = verkiezingContext;
             this.GekozenVerkiezing = gekozenVerkiezing;
         }
 
+        //Hier wordt gekeken of de coalitie die meegegeven wordt ook daadwerkelijk een meerderheid heeft of niet
         public void BerekenCoalitie(List<Partij> partijen)
         {
             partijen.OrderBy(p => p.Stemmen);
@@ -29,6 +29,8 @@ namespace Repository.Logic
             KamerMeerderheid = ZetelsSelectie >= GekozenVerkiezing.ZetelsMeerderheid;
         }
 
+        //Hier wordt de uitslag berekend van een partij.
+        //Het percentage en aantal zetels wordt hier dus berekend aan de hand van het aantal stemmen dat een partij heeft van het totaal
         public void BerekenUitslag(List<Partij> partijen)
         {
             int totaalStemmen = partijen.Sum(p => p.Stemmen);
@@ -43,6 +45,7 @@ namespace Repository.Logic
             }
         }
 
+        //Hier wordt een lijst zo geordered dat de partij met de meeste stemmen op plek 0 in de lijst komt te staan
         public void BepaalPremier(IEnumerable<Partij> partijen)
         {
             Partij partij = partijen.OrderByDescending(p => p.Stemmen).First();
