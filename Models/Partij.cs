@@ -34,6 +34,21 @@
             this.ID = id;
         }
 
+        public void SetStemmen(int stemmen)
+        {
+            this.Stemmen = stemmen;
+        }
+
+        public void SetPercentage(decimal percentage)
+        {
+            this.Percentage = percentage;
+        }
+
+        public void SetZetels(int zetels)
+        {
+            this.Zetels = zetels;
+        }
+
         public void voegToeAanCoalitie(Coalitie coalitie)
         {
             this.PartijCoalitie = coalitie;
@@ -42,6 +57,16 @@
         public override string ToString()
         {
             return Naam;
+        }
+
+        public string ShowInfo()
+        {
+            return Naam + "  -  Zetels: " + Zetels + "  -  Lijsttrekker: " + Lijsttrekker;
+        }
+
+        public string ShowUitslagDetails()
+        {
+            return Naam + "  -  Stemmen: " + Stemmen + "  -  Percentage: " + Percentage + "%  -  Zetels:" + Zetels;
         }
     }
 }

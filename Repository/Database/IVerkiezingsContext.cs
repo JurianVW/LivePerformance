@@ -13,16 +13,16 @@ namespace Repository.Database
 
         void SaveVerkiezing(Verkiezing verkiezing);
 
+        void AddPartijVerkiezing(int verkiezingID, int partijID);
+
         List<Verkiezing> GetAllVerkiezingen();
 
         void GetVerkiezingPartijen(Verkiezing verkiezing);
 
         void GetVerkiezingUitslagen(Verkiezing verkiezing);
 
-        void SaveUitslag(Uitslag uitslag);
+        void SaveUitslag(Uitslag uitslag, int verkiezingID);
 
-        Uitslag GetUitslag(Verkiezing verkiezing);
-
-        void SaveCoalitie(Coalitie coalitie);
+        void GetUitslagPartijen(Uitslag uitslag);
     }
 }

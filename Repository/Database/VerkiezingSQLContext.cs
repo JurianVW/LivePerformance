@@ -65,7 +65,33 @@ namespace Repository.Database
 
         public void SaveVerkiezing(Verkiezing verkiezing)
         {
-            throw new System.NotImplementedException();
+            string query = "INSERT INTO [Verkiezing] ([Naam], [Zetels], [ZetelsMeerderheid])" +
+                           "VALUES (@Naam, @Zetels, @ZetelsMeerderheid)";
+
+            using (SqlCommand command = con.Connection.CreateCommand())
+            {
+                command.CommandText = query;
+                command.CommandType = CommandType.Text;
+                command.Parameters.AddWithValue("@Naam", verkiezing.Naam);
+                command.Parameters.AddWithValue("@Zetels", verkiezing.Zetels);
+                command.Parameters.AddWithValue("@ZetelsMeerderheid", verkiezing.ZetelsMeerderheid);
+                command.ExecuteNonQuery();
+            }
+        }
+
+        public void AddPartijVerkiezing(int verkiezingID, int partijID)
+        {
+            string query = "INSERT INTO [Verkiezing_Partij] ([VerkiezingID], [PartijID])" +
+                            "VALUES (@VerkiezingID, @PartijID)";
+
+            using (SqlCommand command = con.Connection.CreateCommand())
+            {
+                command.CommandText = query;
+                command.CommandType = CommandType.Text;
+                command.Parameters.AddWithValue("@VerkiezingID", verkiezingID);
+                command.Parameters.AddWithValue("@PartijID", partijID);
+                command.ExecuteNonQuery();
+            }
         }
 
         public List<Verkiezing> GetAllVerkiezingen()
@@ -149,19 +175,86 @@ namespace Repository.Database
             }
         }
 
-        public void SaveUitslag(Uitslag uitslag)
+        public void SaveUitslag(Uitslag uitslag, int verkiezingID)
         {
-            throw new System.NotImplementedException();
+            int uitslagID = uitslag.ID;
+            string query = uitslagID == 0
+                ? "INSERT INTO [Uitslag] ([VerkiezingID], [Naam], [Datum]) " +
+                  "OUTPUT INSERTED.ID " +
+                  "VALUES (@VerkiezingID, @Naam, @Datum)"
+                : "UPDATE [Uitslag] SET [VerkiezingID]=@VerkiezingID, [Naam]=@Naam, [Datum]=@Datum " +
+                  "WHERE ID=@ID";
+
+            using (SqlCommand command = con.Connection.CreateCommand())
+            {
+                command.CommandText = query;
+                command.CommandType = CommandType.Text;
+                command.Parameters.AddWithValue("@VerkiezingID", verkiezingID);
+                command.Parameters.AddWithValue("@Naam", uitslag.Naam);
+                command.Parameters.AddWithValue("@Datum", uitslag.Datum);
+                if (uitslag.ID != 0)
+                {
+                    command.Parameters.AddWithValue("@ID", uitslag.ID);
+                    command.ExecuteNonQuery();
+                }
+                else
+                {
+                    int result = Convert.ToInt32(command.ExecuteScalar());
+                    uitslag.SetID(result);
+                }
+            }
+            foreach (Partij p in uitslag.Partijen)
+            {
+                query = uitslagID == 0
+                    ? "INSERT INTO [Uitslag_Partij] ([UitslagID], [PartijID], [Stemmen], [Percentage], [Zetels]) " +
+                      "VALUES (@UitslagID, @PartijID, @Stemmen, @Percentage, @Zetels)"
+                    : "UPDATE [Uitslag_Partij] SET [Stemmen]=@Stemmen, [Percentage]=@Percentage, [Zetels]=@Zetels " +
+                      "WHERE UitslagID=@UitslagID AND PartijID=@PartijID";
+
+                using (SqlCommand command = con.Connection.CreateCommand())
+                {
+                    command.CommandText = query;
+                    command.CommandType = CommandType.Text;
+                    command.Parameters.AddWithValue("@Stemmen", p.Stemmen);
+                    command.Parameters.AddWithValue("@Percentage", p.Percentage);
+                    command.Parameters.AddWithValue("@Zetels", p.Zetels);
+                    command.Parameters.AddWithValue("@UitslagID", uitslag.ID);
+                    command.Parameters.AddWithValue("@PartijID", p.ID);
+                    command.ExecuteNonQuery();
+                }
+            }
         }
 
-        public Uitslag GetUitslag(Verkiezing verkiezing)
+        public void GetUitslagPartijen(Uitslag uitslag)
         {
-            throw new System.NotImplementedException();
-        }
+            string query = "SELECT p.*, up.[Stemmen], up.[Percentage], up.[Zetels] FROM [Partij] p " +
+                           "INNER JOIN [Uitslag_Partij] up ON up.[PartijID] = p.ID " +
+                           "INNER JOIN [Uitslag] u ON u.[ID] = up.[UitslagID] " +
+                           "WHERE u.ID = @ID " +
+                           "ORDER BY p.[Naam]";
+            List<Partij> partijen = new List<Partij>();
 
-        public void SaveCoalitie(Coalitie coalitie)
-        {
-            throw new System.NotImplementedException();
+            using (SqlCommand command = con.Connection.CreateCommand())
+            {
+                command.CommandText = query;
+                command.CommandType = CommandType.Text;
+                command.Parameters.AddWithValue("@ID", uitslag.ID);
+                using (SqlDataReader dataReader = command.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        Partij partij = new Partij(dataReader.GetString(dataReader.GetOrdinal("Naam")),
+                            dataReader.GetString(dataReader.GetOrdinal("NaamVolledig")),
+                            dataReader.GetString(dataReader.GetOrdinal("Lijsttrekker")),
+                            dataReader.GetInt32(dataReader.GetOrdinal("Stemmen")),
+                        dataReader.GetDecimal(dataReader.GetOrdinal("Percentage")),
+                        dataReader.GetInt32(dataReader.GetOrdinal("Zetels")));
+                        partij.SetID(dataReader.GetInt32(dataReader.GetOrdinal("ID")));
+                        partijen.Add(partij);
+                    }
+                    uitslag.SetUitslagPartijen(partijen);
+                }
+            }
         }
     }
 }

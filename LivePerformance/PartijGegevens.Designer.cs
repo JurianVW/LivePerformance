@@ -109,7 +109,7 @@
             this.Controls.Add(this.lblPartijGegevensNaam);
             this.Controls.Add(this.tbPartijGegevensNaam);
             this.Name = "PartijGegevens";
-            this.Text = "PartijGegevens";
+            this.Text = "Partij";
             this.ResumeLayout(false);
             this.PerformLayout();
 

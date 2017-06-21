@@ -18,6 +18,11 @@ namespace Repository.Logic
             context.SaveVerkiezing(verkiezing);
         }
 
+        public void AddPartijVerkiezing(int verkiezingID, int partijID)
+        {
+            context.AddPartijVerkiezing(verkiezingID, partijID);
+        }
+
         public List<Verkiezing> GetAllVerkiezingen()
         {
             return context.GetAllVerkiezingen();

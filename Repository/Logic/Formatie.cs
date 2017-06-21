@@ -12,8 +12,9 @@ namespace Repository.Logic
     {
         private IVerkiezingsContext context;
         public Verkiezing GekozenVerkiezing { get; private set; }
-
-        private int TotaalAantalStemmen;
+        public int ZetelsSelectie { get; private set; }
+        public bool KamerMeerderheid { get; private set; }
+        public string Premier { get; private set; }
 
         public Formatie(IVerkiezingsContext verkiezingContext, Verkiezing gekozenVerkiezing)
         {
@@ -21,34 +22,36 @@ namespace Repository.Logic
             this.GekozenVerkiezing = gekozenVerkiezing;
         }
 
-        public void BerekenPartijGegevens(List<Partij> partijen)
+        public void BerekenCoalitie(List<Partij> partijen)
         {
-            throw new NotImplementedException();
+            partijen.OrderBy(p => p.Stemmen);
+            ZetelsSelectie = partijen.Sum(p => p.Zetels);
+            KamerMeerderheid = ZetelsSelectie >= GekozenVerkiezing.ZetelsMeerderheid;
         }
 
-        public bool CheckCoalitieMeerderheid(List<Partij> partijen)
+        public void BerekenUitslag(List<Partij> partijen)
         {
-            throw new NotImplementedException();
+            int totaalStemmen = partijen.Sum(p => p.Stemmen);
+
+            foreach (Partij p in partijen)
+            {
+                if (p.Stemmen != 0)
+                {
+                    p.SetPercentage(Math.Round(100 / (decimal)totaalStemmen * (decimal)p.Stemmen, 2));
+                    p.SetZetels((int)Math.Round(((decimal)p.Stemmen / (decimal)totaalStemmen) * (decimal)GekozenVerkiezing.Zetels));
+                }
+            }
         }
 
-        public List<Partij> GetPartijOverzicht(Uitslag uitslag)
+        public void BepaalPremier(IEnumerable<Partij> partijen)
         {
-            throw new NotImplementedException();
-        }
-
-        public string BepaalPremier(List<Partij> partijen)
-        {
-            throw new NotImplementedException();
+            Partij partij = partijen.OrderByDescending(p => p.Stemmen).First();
+            Premier = partij.Lijsttrekker;
         }
 
         public void ExportCoalitie(List<Partij> partijen, string locatie, string afzender, string ontvanger)
         {
             throw new NotImplementedException();
-        }
-
-        public void SaveCoalitie(Coalitie coalitie)
-        {
-            context.SaveCoalitie(coalitie);
         }
     }
 }

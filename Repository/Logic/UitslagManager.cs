@@ -12,14 +12,14 @@ namespace Repository.Logic
             this.context = verkiezingContext;
         }
 
-        public void SaveUitslag(Uitslag uitslag)
+        public void SaveUitslag(Uitslag uitslag, int verkiezingID)
         {
-            context.SaveUitslag(uitslag);
+            context.SaveUitslag(uitslag, verkiezingID);
         }
 
-        public Uitslag GetUitslag(Verkiezing verkiezing)
+        public void GetUitslagPartijen(Uitslag uitslag)
         {
-            return context.GetUitslag(verkiezing);
+            context.GetUitslagPartijen(uitslag);
         }
     }
 }
