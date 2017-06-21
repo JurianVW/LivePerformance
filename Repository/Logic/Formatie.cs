@@ -48,10 +48,5 @@ namespace Repository.Logic
             Partij partij = partijen.OrderByDescending(p => p.Stemmen).First();
             Premier = partij.Lijsttrekker;
         }
-
-        public void ExportCoalitie(List<Partij> partijen, string locatie, string afzender, string ontvanger)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
